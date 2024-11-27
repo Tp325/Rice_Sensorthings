@@ -5,6 +5,7 @@
 
 class soild7in1 {
 private:
+  SoftwareSerial *mySerial;
   byte _queryTemHum[8] = { 0x01, 0x03, 0x00, 0x12, 0x00, 0x02, 0x64, 0x0E };
   byte _queryN[8] = { 0x01, 0x03, 0x00, 0x1E, 0x00, 0x01, 0xE4, 0x0C };
   byte _queryP[8] = { 0x01, 0x03, 0x00, 0x1F, 0x00, 0x01, 0xB5, 0xCC };
@@ -15,7 +16,8 @@ private:
   uint32_t _baud_rate;
 
 public:
-  soild7in1(uint32_t baud_rate, int RXPIN, int TXPIN);
+  soild7in1(int RXPIN, int TXPIN);
+  void begin(long baurate);
   int getSensorValue(byte dataForSend[8], uint8_t sizeOfData, uint8_t possion);
   int getTemperature();  // oC
   int getHumidity();     //%
@@ -29,13 +31,15 @@ public:
 
 class soild3in1 {
 private:
+  SoftwareSerial *mySerial;
   byte _queryTemHum[8] = { 0x01, 0x03, 0x00, 0x12, 0x00, 0x02, 0x64, 0x0E };
   byte _queryPH[8] = { 0x01, 0x03, 0x00, 0x06, 0x00, 0x01, 0x64, 0x0B };
   byte receiveData[10];
   uint32_t _baud_rate;
 
 public:
-  soild3in1();
+  soild3in1(int RX, int TX);
+  void begin(long baurate);
   int getSensorValue(byte dataForSend[8], uint8_t sizeOfData, uint8_t possion);
   int getHumidity();     //%
   int getTemperature();  // oC
@@ -44,14 +48,16 @@ public:
 
 class distance {
 private:
-  byte _queryDis[8] = {0x50, 0x03, 0x00, 0x34, 0x00, 0x01, 0xC8, 0x45};
+  SoftwareSerial *mySerial;
+  byte _queryDis[8] = { 0x50, 0x03, 0x00, 0x34, 0x00, 0x01, 0xC8, 0x45 };
   // byte _queryDis[8] = { 0x11, 0x03, 0x00, 0x34, 0x00, 0x01, 0xC7, 0x54 };
   // byte _queryDis[8] = { 0x22, 0x03, 0x00, 0x34, 0x00, 0x01, 0xC2, 0x97 };
   // char send_frame_3[8] = { 0x33, 0x03, 0x00, 0x34, 0x00, 0x01, 0xC1, 0xD6 };
   uint32_t _baud_rate;
   byte receiveData[10];
 public:
-  distance(uint32_t baud_rate, int RXPIN, int TXPIN);
+  void begin(long baurate);
+  distance(int RXPIN, int TXPIN);
   int getSensorValue(byte dataForSend[8], uint8_t sizeOfData, uint8_t possion);
   int getDistance();
 };

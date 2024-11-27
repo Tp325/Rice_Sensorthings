@@ -4,7 +4,7 @@
 #include <SPI.h>
 
 #define StationID 1
-#define sleeptime 15*60  // Giây
+#define sleeptime 5 * 60  // Giây
 #define ANALOG_PIN 26
 #define LED_blue 27
 #define LED_red 4
@@ -17,10 +17,11 @@
 #define RST 13
 #define DIO0 2
 //
-soild7in1 soilSensor(9600, 16, 17);
+soild7in1 soilSensor(16, 17);
 URM08 myDistanceSensor(16, 17);
 
 void setup() {
+  delay(1000*30);
   Serial.begin(9600);
   pinMode(Sensor1, OUTPUT);
   pinMode(Sensor2, OUTPUT);
@@ -39,19 +40,16 @@ void setup() {
   Serial.println("LoRa đã sẵn sàng để truyền!");
 
   // Cấu hình thời gian sleep
-}
-
-void loop() {
 
 
   // Đọc giá trị pin lần đầu
   int batteryAnalog = analogRead(ANALOG_PIN);
 
   // Nếu pin thấp, vào chế độ ngủ ngay
-  if (batteryAnalog < 1500) {
-    Serial.println("Pin yếu. Đưa vào chế độ ngủ ngay.");
-    esp_deep_sleep_start();
-  }
+  // if (batteryAnalog < 1500) {
+  //   Serial.println("Pin yếu. Đưa vào chế độ ngủ ngay.");
+  //   esp_deep_sleep_start();
+  // }
 
   // Nếu pin đủ, thực hiện đo và gửi ba lần
   for (int i = 0; i < 3; i++) {
@@ -97,8 +95,11 @@ void loop() {
   }
   //
   //  // Đưa ESP32 vào chế độ ngủ sau khi hoàn thành
-  //  delay(500);
-  Serial.println("Đã hoàn tất gửi dữ liệu. Đưa ESP32 vào chế độ ngủ.");
-  esp_sleep_enable_timer_wakeup(sleeptime * 1000000ULL * 60);  // ngủ sau 5 giây
+  Serial.flush();
+  delay(500);
+  esp_sleep_enable_timer_wakeup(sleeptime * 1000000ULL);  // ngủ sau 5 giây
   esp_deep_sleep_start();
+}
+
+void loop() {
 }
