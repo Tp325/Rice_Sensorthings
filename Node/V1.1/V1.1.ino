@@ -3,8 +3,8 @@
 #include "esp_sleep.h"
 #include <SPI.h>
 
-#define StationID 1
-#define sleeptime 5 * 60  // Giây
+#define StationID 2
+#define sleeptime 15 * 60  // Giây
 #define ANALOG_PIN 26
 #define LED_blue 27
 #define LED_red 4
@@ -65,6 +65,7 @@ void setup() {
     digitalWrite(Sensor2, HIGH);
 
     // Thu thập dữ liệu từ cảm biến
+    soilSensor.begin(9600);
     int humidity = soilSensor.getHumidity();
     int kali = soilSensor.getKali();
     int nito = soilSensor.getNito();
