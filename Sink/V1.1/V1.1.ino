@@ -9,7 +9,7 @@ const char* wifi_password = "1234512345";
 
 // Thông tin MQTT Broker
 const char* mqtt_server = "103.221.220.183";
-const int mqtt_port = 1883;
+const int mqtt_port = 1883;  
 const char* mqtt_user = "api1@Iotlab";
 const char* mqtt_pass = "Iotlab@2023";
 
