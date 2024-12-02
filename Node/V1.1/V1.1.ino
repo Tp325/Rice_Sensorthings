@@ -3,7 +3,7 @@
 #include "esp_sleep.h"
 #include <SPI.h>
 
-#define StationID 2
+#define StationID 1
 #define sleeptime 15 * 60  // Giây
 #define ANALOG_PIN 26
 #define LED_blue 27
@@ -21,7 +21,6 @@ soild7in1 soilSensor(16, 17);
 URM08 myDistanceSensor(16, 17);
 
 void setup() {
-  delay(1000*30);
   Serial.begin(9600);
   pinMode(Sensor1, OUTPUT);
   pinMode(Sensor2, OUTPUT);
@@ -43,7 +42,6 @@ void setup() {
 
 
   // Đọc giá trị pin lần đầu
-  int batteryAnalog = analogRead(ANALOG_PIN);
 
   // Nếu pin thấp, vào chế độ ngủ ngay
   // if (batteryAnalog < 1500) {
@@ -52,48 +50,49 @@ void setup() {
   // }
 
   // Nếu pin đủ, thực hiện đo và gửi ba lần
-  for (int i = 0; i < 3; i++) {
-    // Điều khiển LED và cảm biến
-    digitalWrite(LED_blue, HIGH);
-    digitalWrite(LED_red, HIGH);
-    digitalWrite(LED_yellow, HIGH);
-    delay(500);
-    digitalWrite(LED_blue, LOW);
-    digitalWrite(LED_red, LOW);
-    digitalWrite(LED_yellow, LOW);
-    digitalWrite(Sensor1, HIGH);
-    digitalWrite(Sensor2, HIGH);
+}
+int batteryAnalog = analogRead(ANALOG_PIN);
+for (int i = 0; i < 3; i++) {
+  // Điều khiển LED và cảm biến
+  digitalWrite(LED_blue, HIGH);
+  digitalWrite(LED_red, HIGH);
+  digitalWrite(LED_yellow, HIGH);
+  delay(500);
+  digitalWrite(LED_blue, LOW);
+  digitalWrite(LED_red, LOW);
+  digitalWrite(LED_yellow, LOW);
+  digitalWrite(Sensor1, HIGH);
+  digitalWrite(Sensor2, HIGH);
 
-    // Thu thập dữ liệu từ cảm biến
-    soilSensor.begin(9600);
-    int humidity = soilSensor.getHumidity();
-    int kali = soilSensor.getKali();
-    int nito = soilSensor.getNito();
-    int photpho = soilSensor.getPhotpho();
-    int ph = soilSensor.getPH();
-    int temperature = soilSensor.getTemperature();
-    int ec = soilSensor.getEC();
-    myDistanceSensor.begin(19200);
-    int distance = myDistanceSensor.getDistance();
+  // Thu thập dữ liệu từ cảm biến
+  soilSensor.begin(9600);
+  int humidity = soilSensor.getHumidity();
+  int kali = soilSensor.getKali();
+  int nito = soilSensor.getNito();
+  int photpho = soilSensor.getPhotpho();
+  int ph = soilSensor.getPH();
+  int temperature = soilSensor.getTemperature();
+  int ec = soilSensor.getEC();
+  myDistanceSensor.begin(19200);
+  int distance = myDistanceSensor.getDistance();
 
-    // Tạo gói dữ liệu
-    String dataPacket = String("StationID:") + StationID + ",Humidity:" + humidity + ",Kali:" + kali + ",Nito:" + nito + ",Photpho:" + photpho + ",pH:" + ph + ",Temperature:" + temperature + ",EC:" + ec + ",Distance:" + distance + ",Battery:" + batteryAnalog;
+  // Tạo gói dữ liệu
+  String dataPacket = String("StationID:") + StationID + ",Humidity:" + humidity + ",Kali:" + kali + ",Nito:" + nito + ",Photpho:" + photpho + ",pH:" + ph + ",Temperature:" + temperature + ",EC:" + ec + ",Distance:" + distance + ",Battery:" + batteryAnalog;
 
-    // In gói dữ liệu ra Serial Monitor
-    Serial.println("Gói dữ liệu chuẩn bị gửi:");
-    Serial.println(dataPacket);
+  // In gói dữ liệu ra Serial Monitor
+  Serial.println("Gói dữ liệu chuẩn bị gửi:");
+  Serial.println(dataPacket);
 
-    // Gửi dữ liệu qua LoRa
-    LoRa.beginPacket();
-    LoRa.print(dataPacket);
-    LoRa.endPacket();
+  // Gửi dữ liệu qua LoRa
+  LoRa.beginPacket();
+  LoRa.print(dataPacket);
+  LoRa.endPacket();
 
-    // Xác nhận gói dữ liệu đã gửi
-    Serial.println("Gói dữ liệu đã gửi thành công!");
+  // Xác nhận gói dữ liệu đã gửi
+  Serial.println("Gói dữ liệu đã gửi thành công!");
 
-    // Đợi trước khi gửi lần tiếp theo
-    delay(500);
-  }
+  // Đợi trước khi gửi lần tiếp theo
+  delay(500);
   //
   //  // Đưa ESP32 vào chế độ ngủ sau khi hoàn thành
   Serial.flush();

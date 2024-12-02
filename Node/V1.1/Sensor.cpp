@@ -1,21 +1,23 @@
 #include "Sensor.h"
 #include "Arduino.h"
-
+SoftwareSerial mySerial(16, 17);
 soild7in1 ::soild7in1(int RX, int TX) {
-  mySerial = new SoftwareSerial(RX, TX);
+  this->RX = RX;
+  this->TX = TX;
 }
 void soild7in1 ::begin(long baurate) {
-  mySerial->begin(baurate);
+  mySerial.begin(baurate);
 }
 int soild7in1::getSensorValue(byte dataForSend[8], uint8_t sizeOfData,
                               uint8_t possion) {
-  mySerial->write(dataForSend, 8);
+  mySerial.write(dataForSend, 8);
   delay(200);
-  if (mySerial->available()) {
+  if (mySerial.available()) {
     //    byte response[sizeOfData - 1];
-    mySerial->readBytes(receiveData, sizeOfData - 1);
+    mySerial.readBytes(receiveData, sizeOfData - 1);
     return receiveData[possion] << 8 | receiveData[possion + 1];
   } else {
+    Serial.println("ero");
     return 0;
   }
 }
@@ -43,18 +45,19 @@ int soild7in1 ::getEC() {
 
 
 soild3in1::soild3in1(int RX, int TX) {
-  mySerial = new SoftwareSerial(RX, TX);
+  this->RX = RX;
+  this->TX = TX;
 }
 void soild3in1::begin(long baurate) {
-  mySerial->begin(baurate);
+  mySerial.begin(baurate);
 }
 int soild3in1::getSensorValue(byte dataForSend[8], uint8_t sizeOfData,
                               uint8_t possion) {
-  mySerial->write(dataForSend, 8);
+  mySerial.write(dataForSend, 8);
   delay(200);
-  if (mySerial->available()) {
+  if (mySerial.available()) {
     //    byte response[sizeOfData - 1];
-    mySerial->readBytes(receiveData, sizeOfData - 1);
+    mySerial.readBytes(receiveData, sizeOfData - 1);
     return receiveData[possion] << 8 | receiveData[possion + 1];
   } else {
     return 0;
@@ -72,18 +75,19 @@ int soild3in1 ::getPH() {
 }
 
 distance::distance(int RX, int TX) {
-  mySerial = new SoftwareSerial(RX, TX);
+  this->RX = RX;
+  this->TX = TX;
 }
 void distance::begin(long baurate) {
-  mySerial->begin(baurate);
+  mySerial.begin(baurate);
 }
 int distance::getSensorValue(byte dataForSend[8], uint8_t sizeOfData,
                              uint8_t possion) {
-  mySerial->write(dataForSend, 8);
+  mySerial.write(dataForSend, 8);
   delay(200);
-  if (mySerial->available()) {
+  if (mySerial.available()) {
     //    //    byte response[sizeOfData - 1];
-    mySerial->readBytes(receiveData, sizeOfData - 1);
+    mySerial.readBytes(receiveData, sizeOfData - 1);
     return receiveData[possion] << 8 | receiveData[possion + 1];
   } else {
     return 0;
@@ -93,17 +97,18 @@ int distance::getDistance() {
   return getSensorValue(_queryDis, 8, 3);
 }
 URM08::URM08(int RX, int TX) {
-  mySerial = new SoftwareSerial(RX, TX);
+  this->RX = RX;
+  this->TX = TX;
 }
 void URM08::begin(long baurate) {
-  mySerial->begin(baurate);
+  mySerial.begin(baurate);
 }
 int URM08::getSensorValue(byte dataForSend[8], uint8_t sizeOfData,
                           uint8_t possion) {
-  mySerial->write(dataForSend, 8);
+  mySerial.write(dataForSend, 8);
   delay(200);
-  if (mySerial->available()) {
-    mySerial->readBytes(receiveData, sizeOfData - 1);
+  if (mySerial.available()) {
+    mySerial.readBytes(receiveData, sizeOfData - 1);
     return receiveData[possion] << 8 | receiveData[possion + 1];
   } else {
     return 0;
@@ -118,10 +123,10 @@ float URM08::getTemperature() {
 int URM08::setAddress(byte newAddress) {
   byte addressformat[8] = { 0x55, 0xAA, 0xAB, 0x01, 0x55, newAddress, 0x12 };
   for (int i = 0; i <= 7; i++) {
-    mySerial->write(addressformat[i]);
+    mySerial.write(addressformat[i]);
   }
-  if (mySerial->available()) {
-    mySerial->readBytes(receiveData, 6);
+  if (mySerial.available()) {
+    mySerial.readBytes(receiveData, 6);
   }
   if (receiveData[5] == 0xCC) {
     return 1;
